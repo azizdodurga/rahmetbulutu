@@ -164,9 +164,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-# Statik dosyaların toplanacağı yer
+STATIC_URL = 'static/'
+
+# İŞTE EKSİK OLAN SATIR BU:
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# STATICFILES_DIRS eğer projenin içinde özel bir static klasörü varsa kullanılmalı
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Eski STATICFILES_STORAGE satırını SİL ve yerine bunu yapıştır:
 STORAGES = {
