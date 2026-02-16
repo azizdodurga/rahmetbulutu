@@ -171,10 +171,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Eski STATICFILES_STORAGE satırını SİL ve yerine bunu yapıştır:
 STORAGES = {
     "default": {
-        "ENGINE": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "django.core.files.storage.FileSystemStorage", # 'ENGINE' değil 'BACKEND' olmalı!
     },
     "staticfiles": {
-        "ENGINE": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
