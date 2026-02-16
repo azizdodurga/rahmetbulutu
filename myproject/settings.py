@@ -205,15 +205,19 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # 2. Ama asıl yeni sistemi de hemen altında tanımlıyoruz
+# 1. STORAGES kısmını en sade hale getir (Manifest kısmını SİL)
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # En güvenli ve hata vermeyen backend budur:
+        # 'Manifest' içermeyen, sadece sıkıştırma yapan backend:
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
+
+# 2. WhiteNoise'un hata vermesini tamamen engellemek için bu iki ayarı ekle
 WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_USE_FINDERS = True # Dosyaları bulurken daha esnek davranmasını sağlar
 
 
