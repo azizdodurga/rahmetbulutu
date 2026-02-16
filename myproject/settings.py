@@ -190,17 +190,17 @@ cloudinary.config(
   secure = True
 )
 
-STATIC_URL = 'static/'
+# settings.py
 
-# İŞTE EKSİK OLAN SATIR BU:
+STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# STATICFILES_DIRS eğer projenin içinde özel bir static klasörü varsa kullanılmalı
+# Statik dosyaların aranacağı ek klasörler (opsiyonel)
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# Eski STATICFILES_STORAGE satırını SİL ve yerine bunu yapıştır:
+# İŞTE KRİTİK NOKTA:
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
