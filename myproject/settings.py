@@ -167,7 +167,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # Statik dosyaların toplanacağı yer
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Eski STATICFILES_STORAGE satırını SİL ve yerine bunu yapıştır:
 STORAGES = {
     "default": {
