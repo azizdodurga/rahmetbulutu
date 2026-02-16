@@ -211,13 +211,14 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # 'Manifest' içermeyen, sadece sıkıştırma yapan backend:
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        # WhiteNoise'un sorun çıkaran hashing/sıkıştırma özelliklerini 
+        # devre dışı bırakıp standart Django depolamasını kullanıyoruz.
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
 
-# 2. WhiteNoise'un hata vermesini tamamen engellemek için bu iki ayarı ekle
+# WhiteNoise'u hala middleware olarak kullanmaya devam edeceğiz, 
+# ama o sadece dosyaları sunacak, kontrol etmeyecek.
 WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_USE_FINDERS = True # Dosyaları bulurken daha esnek davranmasını sağlar
 
 
