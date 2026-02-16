@@ -201,6 +201,10 @@ STATICFILES_DIRS = [
 ]
 
 # İŞTE KRİTİK NOKTA:
+# 1. Django'nun "bu ayar yok" demesini engellemek için sahte bir tanımlama yapıyoruz
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# 2. Ama asıl yeni sistemi de hemen altında tanımlıyoruz
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
