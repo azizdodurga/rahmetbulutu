@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Giriş Yap | CloudBlog{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-5">
+    <div class="card shadow border-0 rounded-4">
+      <div class="card-body p-5">
+        <h2 class="text-center mb-4 fw-bold">Tekrar Hoş Geldin! ☁️</h2>
+
+        <form method="post">
+          {% csrf_token %}
+
+          {% if form.errors %}
+          <div class="alert alert-danger small">
+            Kullanıcı adı veya şifre hatalı.
+          </div>
+          {% endif %}
+
+          <div class="mb-3">
+            <label class="form-label">Kullanıcı Adı</label>
+            <input type="text" name="username" class="form-control rounded-pill px-3" required>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Şifre</label>
+            <input type="password" name="password" class="form-control rounded-pill px-3" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 shadow-sm mb-3">
+            Giriş Yap
+          </button>
+
+          <div class="text-center">
+            <span class="text-muted small">Hesabın yok mu?</span>
+            <a href="{% url 'register' %}" class="small text-decoration-none fw-bold"> Hemen Kayıt Ol</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

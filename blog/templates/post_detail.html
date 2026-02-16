@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.seo_title|default:post.title }} | CloudBlog{% endblock %}
+
+{% block description %}{{ post.seo_description|slice:":160" }}{% endblock %}
+
+{% block og_title %}{{ post.title }}{% endblock %}
+{% block og_description %}{{ post.seo_description }}{% endblock %}
+
+{% block og_image %}
+{% if post.image %}
+<meta property="og:image" content="{{ request.build_absolute_uri }}{{ post.image.url }}">
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h1 class="display-4 fw-bold mb-3">{{ post.title }}</h1>
+
+    <!--<p class="text-muted border-bottom pb-3">
+      <strong>Yazar:</strong> {{ post.author }} |
+      <strong>Yayınlanma:</strong> {{ post.created_on|date:"d F Y" }}
+    </p>-->
+
+    <div class="post-content mt-4 leading-relaxed" style="font-size: 1.1rem; line-height: 1.8;">
+      {{ post.content|safe }}
+    </div>
+
+    {% if post.youtube_video_id %}
+    <div class="my-4 shadow-sm rounded-3 overflow-hidden">
+      <div class="ratio ratio-16x9">
+        <div id="youtube-player"></div>
+      </div>
+    </div>
+
+    <script>
+      const VIDEO_SETTINGS = {
+        videoId: "{{ post.youtube_video_id }}",
+        startSeconds: parseFloat("{{ user_progress.last_position|default:0 }}"),
+        csrfToken: "{{ csrf_token }}",
+        saveUrl: "{% url 'save_video_progress' %}"
+      };
+    </script>
+
+
+    <div class="share-buttons mt-5 p-4 border-top border-bottom bg-light rounded-3">
+      <h6 class="text-uppercase fw-bold mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">Bu Yazıyı Paylaş</h6>
+      <div class="d-flex gap-2">
+        <a href="https://api.whatsapp.com/send?text={{ post.title }} - {{ request.build_absolute_uri }}" target="_blank"
+          class="btn btn-success btn-sm rounded-pill px-3">
+          <i class="fab fa-whatsapp me-1"></i> WhatsApp
+        </a>
+
+        <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url={{ request.build_absolute_uri }}"
+          target="_blank" class="btn btn-dark btn-sm rounded-pill px-3">
+          <i class="fab fa-x-twitter me-1"></i> X
+        </a>
+
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank"
+          class="btn btn-primary btn-sm rounded-pill px-3">
+          <i class="fab fa-facebook-f me-1"></i> Paylaş
+        </a>
+
+        <button onclick="copyToClipboard()" class="btn btn-secondary btn-sm rounded-pill px-3">
+          <i class="fas fa-link me-1"></i> Linki Kopyala
+        </button>
+      </div>
+    </div>
+
+    <hr class="my-5">
+
+    <a href="{% url 'home' %}" class="btn btn-cloud mb-5">← Listeye Dön</a>
+  </div>
+</div>
+<script>
+  function copyToClipboard() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      alert("Bağlantı başarıyla kopyalandı!");
+    });
+  }
+</script>
+{% load static %}
+<script src="{% static 'js/video_tracker.js' %}"></script>
+{% endif %}
+
+{% endblock %}

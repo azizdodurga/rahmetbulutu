@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load cache %}
+{% block content %}
+
+<!--<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-2 mb-4">
+      bölüm: Kategoriler, Etiketler, Popüler Yazılar gibi yan içerikler buraya gelecek.
+    </div>
+    <div class="col-lg-4">-->
+{% if query %}
+<div class="alert alert-info">
+  <strong>"{{ query }}"</strong> için sonuçlar gösteriliyor.
+  <a href="{% url 'home' %}" class="float-end">Temizle</a>
+</div>
+{% endif %}
+
+<div class="row">
+  {% cache 600 search_results request.GET.q %}
+  {% for post in page_obj %}
+  <div class="col-md-4 mb-4">
+
+    <div class="card card-cloud shadow-sm h-100 position-relative z-index: 2">
+      {% if post.image %}
+      <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 100%; height: 110px; object-fit: cover;"
+        class="card-img-top">
+      {% else %}
+      <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="Görsel Yok">
+      {% endif %}
+      <div class="card-body">
+        <a href="{% url 'post_detail' post.slug %}" class="text-decoration-none text-dark stretched-link">
+          <h2 class="card-title fw-bold">{{ post.title }}</h2>
+        </a>
+        <!--<p class="card-text text-muted">
+                <small>Yazar: {{ post.author }} | {{ post.created_on|date:"d M Y" }}
+                  <span class="badge bg-secondary">{{post.category.name }}</span></small>
+              </p>-->
+        <p class="card-text">
+          {{ post.content|slice:":150"|safe }}... </p>
+        <a href="{% url 'post_detail' post.slug %}" class="btn btn-cloud btn-sm">Cüz Dinle</a>
+      </div>
+    </div>
+
+  </div>
+
+  {% empty %}
+  <div class="col-12 text-center">
+    <p class="lead">Henüz hiç yazı paylaşılmamış.</p>
+  </div>
+  {% endfor %}
+  {% endcache %}
+  <!-- Sayfalama -->
+  <nav aria-label="Sayfalama">
+    <ul class="pagination justify-content-center mt-4">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1">&laquo; İlk</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Önceki</a>
+      </li>
+      {% endif %}
+
+      <li class="page-item disabled">
+        <span class="page-link">Sayfa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      </li>
+
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link"
+          href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Sonraki</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Son &raquo;</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+
+<!--   </div>
+  </div>
+</div>-->
+{% endblock %}

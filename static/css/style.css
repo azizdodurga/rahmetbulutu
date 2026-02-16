@@ -1,0 +1,103 @@
+/* Modern Font Yükleme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+body {
+  background-color: #fdfdfd;
+  /* Light Cloud Arka Plan */
+  font-family: 'Inter', sans-serif;
+  color: #03396c !important;
+}
+
+/* Koyu Cloud Navbar */
+.navbar-cloud-dark {
+  background-color: #bac8d1 !important;
+}
+
+/* Cloud Card Tasarımı */
+.card-cloud {
+  background: #cfd0d5;
+  border: none;
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.card-cloud:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.btn-cloud {
+  background-color: #c4e6ff;
+  color: rgb(0, 0, 0);
+  border-radius: 8px;
+  padding: 8px 20px;
+  border: none;
+}
+
+.btn-cloud:hover {
+  background-color: #90d0fb;
+  color: white;
+}
+
+.reading-progress-link {
+  background: transparent !important;
+  /* Arka planı tamamen kaldırdık */
+  color: #34475a !important;
+  /* Standart, yormayan bir gri tonu */
+  border: none !important;
+  /* Çerçeveyi kaldırdık */
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 8px 12px !important;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+
+/* Üzerine gelince (Hover) sadece yazı rengi değişsin */
+.reading-progress-link:hover {
+  color: #0d6efd !important;
+  /* Maviye dönüşerek etkileşim verir */
+  background: transparent !important;
+}
+
+/* İkonun biraz daha sönük durması zarifliği artırır */
+.reading-progress-link i {
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.logout-btn-minimal {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: #dc3545;
+  /* Zarif bir kırmızı tonu */
+  padding: 10px 20px;
+  text-align: left;
+  /* Mobilde ve dropdown'da solda durması için */
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.logout-btn-minimal:hover {
+  background-color: rgba(220, 53, 69, 0.05);
+  /* Üzerine gelince çok hafif kırmızımsı bir saydamlık */
+  color: #a71d2a;
+  /* Daha koyu kırmızı */
+  text-decoration: none;
+}
+
+/* Dropdown menüsünün kendi iç boşluğunu sıfırlayarak beyazlığı yok ediyoruz */
+.dropdown-menu {
+  padding: 0;
+  overflow: hidden;
+  /* Kenarların yuvarlaklığını korumak için */
+}

@@ -1,0 +1,108 @@
+{%load static %}
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{% block title %}Rahmet Bulutu{% endblock %}</title>
+
+  <meta name="description"
+    content="{% block description %}Kur'an-ı Kerim ayetleri, güvenilir mealler, derinlemesine açıklamalar ve ilgili hadis-i şeriflerle İslam'ın nuruna yolculuk yapın. Kalbinize dokunan rahmet damlaları.{% endblock %}">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title"
+    content="{% block og_title %}Rahmet Bulutu | Ayetler, Mealler ve Hadis-i Şerif Tefsirleri{% endblock %}">
+  <meta property="og:description"
+    content="{% block og_description %}Kur'an-ı Kerim ayetleri, güvenilir mealler, derinlemesine açıklamalar ve ilgili hadis-i şeriflerle İslam'ın nuruna yolculuk yapın. Kalbinize dokunan rahmet damlaları.{% endblock %}">
+  {% block og_image %}
+  <meta property="og:image" content="https://siteniz.com/static/img/default-share.jpg">
+  {% endblock %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-cloud-dark p-3" data-bs-theme="light">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="{% url 'home' %}">Rahmet Bulutu</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item mb-2 mb-lg-0">
+            {% if user.is_authenticated %}
+            {% if user.history.last_post %}
+          <li class="nav-item">
+            <a class="nav-link reading-progress-link" href="{{ user.history.last_post.get_absolute_url }}">
+              <i class="far fa-bookmark me-2"></i>
+              <span>Kaldığın Yer: {{ user.history.last_post.title|slice:":25" }}...</span>
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="fas fa-user-circle"></i> {{ user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+              <!--a class="dropdown-item small" href="#"><i class="fas fa-cog me-2"></i>Ayarlar</a></li>
+                            <li><hr class="dropdown-divider"></li>-->
+              <li>
+                <form action="{% url 'logout' %}" method="post" style="margin: 0; padding: 0;">
+                  {% csrf_token %}
+                  <button type="submit" class="logout-btn-minimal">
+                    <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </li>
+
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Giriş Yap</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Kayıt Ol</a>
+          </li>
+          {% endif %}
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Bölümler
+            </a>
+            <ul class="dropdown-menu">
+              {% for cat in all_categories %}
+              <li>
+                <a class="dropdown-item" href="{% url 'category_detail' cat.slug %}">
+                  {{ cat.name }}
+                </a>
+              </li>
+              {% empty %}
+              <li><span class="dropdown-item-text text-muted">Henüz kategori yok</span></li>
+              {% endfor %}
+            </ul>
+          </li>
+        </ul>
+        <form action="{% url 'home' %}" method="GET" class="d-flex">
+          <input class="form-control me-2 text-dark bg-light" type="search" name="q" placeholder="... Arama Yapın"
+            aria-label="Search" value="{{ query|default:'' }}">
+          <button class="btn btn-outline-dark" type="submit">Ara</button>
+        </form>
+      </div>
+  </nav>
+
+  <div class="container mt-4">
+    {% block content %} {% endblock %}
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
