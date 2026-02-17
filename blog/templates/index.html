@@ -16,7 +16,7 @@
 {% endif %}
 
 <div class="row">
-  {% cache 600 search_results request.GET.q %}
+
   {% for post in page_obj %}
   <div class="col-md-4 mb-4">
 
@@ -48,7 +48,7 @@
     <p class="lead">Henüz hiç yazı paylaşılmamış.</p>
   </div>
   {% endfor %}
-  {% endcache %}
+
   <!-- Sayfalama -->
   <nav aria-label="Sayfalama">
     <ul class="pagination justify-content-center mt-4">

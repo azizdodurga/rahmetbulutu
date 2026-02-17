@@ -1,0 +1,7 @@
+.git
+.gitignore
+__pycache__/
+*.py[co]
+db.sqlite3
+virenv/
+.env

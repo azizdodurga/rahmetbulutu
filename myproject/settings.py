@@ -42,7 +42,8 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 ALLOWED_HOSTS = ['*']
-
+# CSRF hatalarını önlemek için (Google Cloud Run için kritik)
+CSRF_TRUSTED_ORIGINS = ['https://*.a.run.app']
 
 # Application definition
 
