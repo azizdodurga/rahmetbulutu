@@ -192,33 +192,25 @@ cloudinary.config(
 
 # settings.py
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Statik dosyaların aranacağı ek klasörler (opsiyonel)
+# Eğer projenin ana dizininde 'static' diye bir klasörün varsa:
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# İŞTE KRİTİK NOKTA:
-# 1. Django'nun "bu ayar yok" demesini engellemek için sahte bir tanımlama yapıyoruz
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-# 2. Ama asıl yeni sistemi de hemen altında tanımlıyoruz
-# 1. STORAGES kısmını en sade hale getir (Manifest kısmını SİL)
+# En güvenli WhiteNoise depolama ayarı:
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # WhiteNoise'un sorun çıkaran hashing/sıkıştırma özelliklerini 
-        # devre dışı bırakıp standart Django depolamasını kullanıyoruz.
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
-# WhiteNoise'u hala middleware olarak kullanmaya devam edeceğiz, 
-# ama o sadece dosyaları sunacak, kontrol etmeyecek.
+# CSS'lerin eksik dosya hatasıyla patlamaması için:
 WHITENOISE_MANIFEST_STRICT = False
 
 
