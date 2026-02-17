@@ -21,17 +21,14 @@ from blog.views import register
 
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns # Ekledik
 
 from django.contrib.sitemaps.views import sitemap
 from blog.sitemaps import PostSitemap
 
 from django.views.generic import TemplateView
 
-urlpatterns = [
-    # ...
-    
-    # ...
-]
+
 
 sitemaps = {
     'posts': PostSitemap,
@@ -45,7 +42,7 @@ urlpatterns = [
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]
-# Statik ve Medya dosyalarını geliştirme/canlı modunda desteklemek için:
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# Statik dosyaları her koşulda sunmaya zorla
+urlpatterns += staticfiles_urlpatterns()
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -192,33 +192,18 @@ cloudinary.config(
 
 
 
-# Bu satır MUTLAKA olmalı ve başında/sonunda tırnaklara dikkat edilmeli
 STATIC_URL = 'static/'
-
-# Render için gereken diğer yollar
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Proje içindeki ek statik klasörler
+# Proje ana dizinindeki 'static' klasörünü bulması için
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# 1. Django'nun hata vermemesi için eski değişkeni boş bırakalım veya standart yapalım
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+# En kararlı WhiteNoise backend'i
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-# 2. STORAGES bloğunu EN SADE hale getiriyoruz (Sıkıştırma/Manifest YOK)
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        # WhiteNoise'un sıkıştırma yapmayan, en temel backend'i:
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
-
-# 3. WhiteNoise'un dosyaları bulurken hata toleransını maksimuma çıkaralım
+# Bu ayar, eksik dosya olsa bile CSS'lerin yüklenmesini durdurmaz
 WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_KEEP_FILES_ON_DEPLOY = True
 
 
