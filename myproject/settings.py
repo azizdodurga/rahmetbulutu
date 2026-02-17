@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader', # Resim yükleme desteği istiyorsan ekle
     'django.contrib.sitemaps',
     'django.contrib.sites', # Bu da gereklidir
+    'whitenoise.runserver_nostatic',
     'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
@@ -195,15 +196,11 @@ cloudinary.config(
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Proje ana dizinindeki 'static' klasörünü bulması için
+# Eğer projenin ana dizininde kendi yazdığın CSS'lerin olduğu bir 'static' klasörü varsa:
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# En kararlı WhiteNoise backend'i
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
-# Bu ayar, eksik dosya olsa bile CSS'lerin yüklenmesini durdurmaz
+# WhiteNoise'un dosyaları bulamazsa hata verip siteyi çökertmesini engellemek için:
 WHITENOISE_MANIFEST_STRICT = False
-
 
