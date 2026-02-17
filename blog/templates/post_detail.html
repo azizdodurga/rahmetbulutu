@@ -61,7 +61,9 @@
             'playsinline': 1,  // Mobil tarayıcı içinde oynatmayı zorunlu kılar
             'rel': 0,          // Video bitince sadece kanalın videolarını gösterir
             'modestbranding': 1,
-            'origin': window.location.origin // Güvenlik doğrulaması
+            // ORIGIN DEĞİŞİKLİĞİ BURADA:
+            'origin': 'https://rahmetbulutu.onrender.com',
+            'widget_referrer': 'https://rahmetbulutu.onrender.com'
           },
           events: {
             'onStateChange': onPlayerStateChange // Senin ilerleme kaydetme fonksiyonun
