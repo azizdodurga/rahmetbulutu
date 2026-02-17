@@ -190,23 +190,31 @@ cloudinary.config(
   secure = True
 )
 
-# settings.py
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Statik dosyaları sunmak için yeni Django 4.2+ formatı
+# 1. Django'nun "bu ayar yok" diyerek hata vermesini engellemek için:
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+# 2. Django 4.2+ için yeni standart ayar:
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # WhiteNoise'un en stabil versiyonu
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
-# WhiteNoise'un hata fırlatmasını engellemek için (CKEditor sorunları için kritik)
+# 3. WhiteNoise'un hata toleransı
 WHITENOISE_MANIFEST_STRICT = False
+
+# 4. Statik yol tanımları
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Proje içindeki static klasörünü tanıtmak için (isteğe bağlı)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 
