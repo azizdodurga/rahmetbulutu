@@ -41,7 +41,7 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-ALLOWED_HOSTS = ['.render.com', '.railway.app', 'localhost', '127.0.0.1', 'senindomainin.com']
+ALLOWED_HOSTS = ['rahmetbulutu.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
