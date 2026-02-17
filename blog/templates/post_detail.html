@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}{{ post.seo_title|default:post.title }} | CloudBlog{% endblock %}
 
 {% block description %}{{ post.seo_description|slice:":160" }}{% endblock %}
@@ -28,102 +30,76 @@
 
 {% if post.youtube_video_id %}
 <div class="my-4 shadow-sm rounded-3 overflow-hidden">
-  <div class="ratio ratio-16x9">
+  <div class="ratio ratio-16x9 bg-dark">
     <div id="youtube-player"></div>
   </div>
 </div>
 
 <script>
-  const VIDEO_SETTINGS = {
+  // 1. Global değişkenleri tanımla (Tracker kullanabilsin diye)
+  window.VIDEO_SETTINGS = {
     videoId: "{{ post.youtube_video_id }}",
     startSeconds: Math.floor(parseFloat("{{ user_progress.last_position|default:0 }}".toString().replace(',', '.')) || 0),
     csrfToken: "{{ csrf_token }}",
-    saveUrl: "{% url 'save_video_progress' %}"
+    saveUrl: "{% url 'save_video_progress' %}",
+    origin: 'https://rahmetbulutu.onrender.com'
   };
 
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
   var player;
-  function onYouTubeIframeAPIReady() {
+
+  // 2. Oynatıcıyı kuran ana fonksiyon
+  function setupYoutubePlayer() {
+    // Eğer div yoksa veya API hazır değilse çık
+    if (!document.getElementById('youtube-player') || typeof YT === 'undefined' || !YT.loaded) return;
+
     player = new YT.Player('youtube-player', {
       height: '100%',
       width: '100%',
-      videoId: VIDEO_SETTINGS.videoId,
-      // Chrome Mobil için standart host + origin ikilisi en sağlamıdır
+      videoId: window.VIDEO_SETTINGS.videoId,
       host: 'https://www.youtube.com',
       playerVars: {
-        'start': VIDEO_SETTINGS.startSeconds,
+        'start': window.VIDEO_SETTINGS.startSeconds,
         'playsinline': 1,
-        'rel': 0,
         'enablejsapi': 1,
-        'modestbranding': 1,
-        // ORIGIN DEĞİŞİKLİĞİ BURADA:
-        'origin': 'https://rahmetbulutu.onrender.com',
-        'widget_referrer': 'https://rahmetbulutu.onrender.com'
+        'origin': window.VIDEO_SETTINGS.origin,
+        'widget_referrer': window.VIDEO_SETTINGS.origin
       },
       events: {
-        'onStateChange': onPlayerStateChange,
-        'onError': onPlayerError
+        'onStateChange': function(event) {
+            // video_tracker.js içindeki fonksiyonu tetikle
+            if (typeof onPlayerStateChange === 'function') {
+                onPlayerStateChange(event);
+            }
+        },
+        'onError': function(e) { 
+            console.log("YouTube Error:", e.data);
+            if(e.data == 153 || e.data == 101) {
+                document.getElementById('youtube-player').innerHTML = '<div class="text-white p-4 text-center">Video bu tarayıcıda kısıtlı. <a href="https://youtube.com/watch?v='+window.VIDEO_SETTINGS.videoId+'" class="btn btn-danger btn-sm">YouTube\'da Aç</a></div>';
+            }
+        }
       }
     });
   }
 
-  function onPlayerError(event) {
-    console.error("YouTube Hata Kodu:", event.data);
+  // 3. API yükleme sinyalleri
+  function onYouTubeIframeAPIReady() {
+    setupYoutubePlayer();
   }
 
-  function onPlayerStateChange(event) {
-    if (typeof checkProgress === "function") {
-       checkProgress(event); 
+  // Sayfa değişimlerinde API zaten yüklüyse tetikle
+  if (window.YT && window.YT.loaded) {
+    setupYoutubePlayer();
+  } else {
+    if (!document.getElementById('yt-api-script')) {
+      var tag = document.createElement('script');
+      tag.id = 'yt-api-script';
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
   }
 </script>
 
-  
-
-
-    <div class="share-buttons mt-5 p-4 border-top border-bottom bg-light rounded-3">
-      <h6 class="text-uppercase fw-bold mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">Bu Yazıyı Paylaş</h6>
-      <div class="d-flex gap-2">
-        <a href="https://api.whatsapp.com/send?text={{ post.title }} - {{ request.build_absolute_uri }}" target="_blank"
-          class="btn btn-success btn-sm rounded-pill px-3">
-          <i class="fab fa-whatsapp me-1"></i> WhatsApp
-        </a>
-
-        <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url={{ request.build_absolute_uri }}"
-          target="_blank" class="btn btn-dark btn-sm rounded-pill px-3">
-          <i class="fab fa-x-twitter me-1"></i> X
-        </a>
-
-        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank"
-          class="btn btn-primary btn-sm rounded-pill px-3">
-          <i class="fab fa-facebook-f me-1"></i> Paylaş
-        </a>
-
-        <button onclick="copyToClipboard()" class="btn btn-secondary btn-sm rounded-pill px-3">
-          <i class="fas fa-link me-1"></i> Linki Kopyala
-        </button>
-      </div>
-    </div>
-
-    <hr class="my-5">
-
-    <a href="{% url 'home' %}" class="btn btn-cloud mb-5">← Listeye Dön</a>
-  </div>
-</div>
-<script>
-  function copyToClipboard() {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
-      alert("Bağlantı başarıyla kopyalandı!");
-    });
-  }
-</script>
-{% load static %}
 <script src="{% static 'js/video_tracker.js' %}"></script>
 {% endif %}
-
 {% endblock %}
