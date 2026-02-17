@@ -194,22 +194,25 @@ cloudinary.config(
 
 
  # settings.py
+# settings.py
 
-# 1. Django 4.2+ için en hatasız ve sade yapı:
+# 1. Django'nun "bu ayar nerede?" demesini engellemek için (Eski sistemle uyumluluk)
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
+# 2. Django 4.2+ için YENİ ve GÜVENLİ yapı:
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # Sıkıştırma yapmayan standart backend'e geçiyoruz:
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        # WhiteNoise kullanıyorsan en stabil olan budur:
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
-# 2. WhiteNoise'un hata toleransını maksimuma çıkaralım
-WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_KEEP_FILES_ON_DEPLOY = True
-
-# 3. Temel yollar (Bunlar aynı kalabilir)
+# 3. Temel Statik Yollar
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# 4. WhiteNoise Hata Toleransı (CKEditor hatalarını engeller)
+WHITENOISE_MANIFEST_STRICT = False
