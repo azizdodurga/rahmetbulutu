@@ -43,12 +43,10 @@
     saveUrl: "{% url 'save_video_progress' %}"
   };
 
-  // API Yükle
-  if (!window.YT) {
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(tag);
-  }
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
   var player;
   function onYouTubeIframeAPIReady() {
@@ -56,40 +54,37 @@
       height: '100%',
       width: '100%',
       videoId: window.VIDEO_SETTINGS.videoId,
-      // 153 hatasını aşmak için en kritik ayarlar:
-      host: 'https://www.youtube-nocookie.com', 
+      host: 'https://www.youtube-nocookie.com', // Daha az kısıtlama uygular
       playerVars: {
         'autoplay': 0,
         'rel': 0,
         'enablejsapi': 1,
-        'origin': window.location.origin, // Otomatik olarak https://rahmetbulutu.onrender.com çeker
-        'widget_referrer': window.location.origin,
-        'playsinline': 1
+        'playsinline': 1,
+        // DİKKAT: Origin parametresini sildik, bazen Chrome bu parametre varken kilitliyor.
       },
       events: {
-        'onReady': onPlayerReady,
-        'onStateChange': function(e) { 
-           if (typeof onPlayerStateChange === 'function') onPlayerStateChange(e); 
+        'onReady': function(event) {
+          if (window.VIDEO_SETTINGS.startSeconds > 0) {
+            event.target.seekTo(window.VIDEO_SETTINGS.startSeconds);
+          }
+        },
+        'onStateChange': function(event) {
+          if (typeof onPlayerStateChange === 'function') {
+            onPlayerStateChange(event);
+          }
         },
         'onError': function(e) {
-           console.log("Hata Kodu:", e.data);
-           // Eğer hala 153 verirse siyah ekranda kalmasın, kullanıcıya link verelim
-           if(e.data == 153 || e.data == 150 || e.data == 101) {
-             document.getElementById('youtube-player').innerHTML = `
-               <div class="d-flex flex-column align-items-center justify-content-center h-100 text-white p-3 text-center">
-                 <p>Video bu tarayıcıda kısıtlı.</p>
-                 <a href="https://www.youtube.com/watch?v=${window.VIDEO_SETTINGS.videoId}" target="_blank" class="btn btn-danger btn-sm">YouTube'da İzle</a>
-               </div>`;
-           }
+          console.error("Hata:", e.data);
+          if (e.data == 153 || e.data == 150 || e.data == 101) {
+            // Hata verirse videoyu standart iframe ile değiştirmeyi dene (API'siz)
+            document.getElementById('youtube-player').parentElement.innerHTML = `
+              <iframe width="100%" height="100%" 
+                src="https://www.youtube.com/embed/${window.VIDEO_SETTINGS.videoId}?rel=0" 
+                frameborder="0" allowfullscreen></iframe>`;
+          }
         }
       }
     });
-  }
-
-  function onPlayerReady(event) {
-    if (window.VIDEO_SETTINGS.startSeconds > 0) {
-      event.target.seekTo(window.VIDEO_SETTINGS.startSeconds);
-    }
   }
 </script>
 <script src="{% static 'js/video_tracker.js' %}"></script>
