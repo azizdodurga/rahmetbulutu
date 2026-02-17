@@ -36,70 +36,62 @@
 </div>
 
 <script>
-  // 1. Global değişkenleri tanımla (Tracker kullanabilsin diye)
   window.VIDEO_SETTINGS = {
     videoId: "{{ post.youtube_video_id }}",
     startSeconds: Math.floor(parseFloat("{{ user_progress.last_position|default:0 }}".toString().replace(',', '.')) || 0),
     csrfToken: "{{ csrf_token }}",
-    saveUrl: "{% url 'save_video_progress' %}",
-    origin: 'https://rahmetbulutu.onrender.com'
+    saveUrl: "{% url 'save_video_progress' %}"
   };
 
+  // API Yükle
+  if (!window.YT) {
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+  }
+
   var player;
-
-  // 2. Oynatıcıyı kuran ana fonksiyon
-  function setupYoutubePlayer() {
-    // Eğer div yoksa veya API hazır değilse çık
-    if (!document.getElementById('youtube-player') || typeof YT === 'undefined' || !YT.loaded) return;
-
+  function onYouTubeIframeAPIReady() {
     player = new YT.Player('youtube-player', {
       height: '100%',
       width: '100%',
       videoId: window.VIDEO_SETTINGS.videoId,
-      host: 'https://www.youtube.com',
+      // 153 hatasını aşmak için en kritik ayarlar:
+      host: 'https://www.youtube-nocookie.com', 
       playerVars: {
-        'start': window.VIDEO_SETTINGS.startSeconds,
-        'playsinline': 1,
+        'autoplay': 0,
+        'rel': 0,
         'enablejsapi': 1,
-        'origin': window.VIDEO_SETTINGS.origin,
-        'widget_referrer': window.VIDEO_SETTINGS.origin
+        'origin': window.location.origin, // Otomatik olarak https://rahmetbulutu.onrender.com çeker
+        'widget_referrer': window.location.origin,
+        'playsinline': 1
       },
       events: {
-        'onStateChange': function(event) {
-            // video_tracker.js içindeki fonksiyonu tetikle
-            if (typeof onPlayerStateChange === 'function') {
-                onPlayerStateChange(event);
-            }
+        'onReady': onPlayerReady,
+        'onStateChange': function(e) { 
+           if (typeof onPlayerStateChange === 'function') onPlayerStateChange(e); 
         },
-        'onError': function(e) { 
-            console.log("YouTube Error:", e.data);
-            if(e.data == 153 || e.data == 101) {
-                document.getElementById('youtube-player').innerHTML = '<div class="text-white p-4 text-center">Video bu tarayıcıda kısıtlı. <a href="https://youtube.com/watch?v='+window.VIDEO_SETTINGS.videoId+'" class="btn btn-danger btn-sm">YouTube\'da Aç</a></div>';
-            }
+        'onError': function(e) {
+           console.log("Hata Kodu:", e.data);
+           // Eğer hala 153 verirse siyah ekranda kalmasın, kullanıcıya link verelim
+           if(e.data == 153 || e.data == 150 || e.data == 101) {
+             document.getElementById('youtube-player').innerHTML = `
+               <div class="d-flex flex-column align-items-center justify-content-center h-100 text-white p-3 text-center">
+                 <p>Video bu tarayıcıda kısıtlı.</p>
+                 <a href="https://www.youtube.com/watch?v=${window.VIDEO_SETTINGS.videoId}" target="_blank" class="btn btn-danger btn-sm">YouTube'da İzle</a>
+               </div>`;
+           }
         }
       }
     });
   }
 
-  // 3. API yükleme sinyalleri
-  function onYouTubeIframeAPIReady() {
-    setupYoutubePlayer();
-  }
-
-  // Sayfa değişimlerinde API zaten yüklüyse tetikle
-  if (window.YT && window.YT.loaded) {
-    setupYoutubePlayer();
-  } else {
-    if (!document.getElementById('yt-api-script')) {
-      var tag = document.createElement('script');
-      tag.id = 'yt-api-script';
-      tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  function onPlayerReady(event) {
+    if (window.VIDEO_SETTINGS.startSeconds > 0) {
+      event.target.seekTo(window.VIDEO_SETTINGS.startSeconds);
     }
   }
 </script>
-
 <script src="{% static 'js/video_tracker.js' %}"></script>
 {% endif %}
 {% endblock %}
