@@ -1,19 +1,20 @@
-# Python sürümü
-FROM python:3.13-slim
+FROM python:3.10-slim
 
-# Gerekli sistem paketlerini yükle (Postgres için)
-RUN apt-get update && apt-get install -y libpq-dev gcc && rm -rf /var/lib/apt/lists/*
+# 1. Sistem kütüphanelerini yükle (Hata almanı engeller)
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-# Çalışma dizini
 WORKDIR /app
 
-# Bağımlılıkları yükle
+# 2. Önce bağımlılıkları yükle
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Kodları kopyala
+# 3. Kodları kopyala
 COPY . .
 
-# Django'yu Gunicorn ile ayağa kaldır
-# ÖNEMLİ: 'your_project_name' kısmını settings.py'nin olduğu klasör adıyla değiştir!
+# 4. ÇALIŞTIRMA KOMUTU (Proje adını değiştirmeyi UNUTMA)
+# Örn: klasörün adı 'rahmet' ise 'rahmet.wsgi:application' yaz.
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 myproject.wsgi:application
