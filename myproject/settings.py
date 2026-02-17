@@ -73,9 +73,9 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.middleware.security.SecurityMiddleware',    
+MIDDLEWARE = [    
+    'django.middleware.security.SecurityMiddleware',  
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -214,4 +214,11 @@ STORAGES = {
 STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
 # Dosya eksik olsa bile sitenin açılmasını sağlar
 WHITENOISE_MANIFEST_STRICT = False
+
+# settings.py
+import mimetypes
+mimetypes.add_type("text/css", ".css", True)
+
+# WhiteNoise'un dosyaları daha agresif sunması için:
+WHITENOISE_USE_FINDERS = True
 
