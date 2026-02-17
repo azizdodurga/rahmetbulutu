@@ -26,58 +26,62 @@
       {{ post.content|safe }}
     </div>
 
-    {% if post.youtube_video_id %}
-    <div class="my-4 shadow-sm rounded-3 overflow-hidden">
-      <div class="ratio ratio-16x9">
-        <div id="youtube-player"></div>
-      </div>
-    </div>
+{% if post.youtube_video_id %}
+<div class="my-4 shadow-sm rounded-3 overflow-hidden">
+  <div class="ratio ratio-16x9">
+    <div id="youtube-player"></div>
+  </div>
+</div>
 
-    <script>
-      // 1. Ayarları Güvenli Hale Getir
-      const VIDEO_SETTINGS = {
-        videoId: "{{ post.youtube_video_id }}",
-        // Sayı formatındaki virgül/nokta hatasını önlemek için:
-        startSeconds: Math.floor(parseFloat("{{ user_progress.last_position|default:0 }}".toString().replace(',', '.')) || 0),
-        csrfToken: "{{ csrf_token }}",
-        saveUrl: "{% url 'save_video_progress' %}"
-      };
+<script>
+  const VIDEO_SETTINGS = {
+    videoId: "{{ post.youtube_video_id }}",
+    startSeconds: Math.floor(parseFloat("{{ user_progress.last_position|default:0 }}".toString().replace(',', '.')) || 0),
+    csrfToken: "{{ csrf_token }}",
+    saveUrl: "{% url 'save_video_progress' %}"
+  };
 
-      // 2. YouTube IFrame API'sini "No-Cookie" üzerinden yükle
-      var tag = document.createElement('script');
-      tag.src = "https://www.youtube-nocookie.com/iframe_api"; // <-- Güncellenen Link
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-      var player;
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player('youtube-player', {
-          height: '100%',
-          width: '100%',
-          videoId: VIDEO_SETTINGS.videoId,
-          host: 'https://www.youtube-nocookie.com', // <-- API'ye No-Cookie hostunu zorla
-          playerVars: {
-            'start': VIDEO_SETTINGS.startSeconds,
-            'playsinline': 1,  // Mobil tarayıcı içinde oynatmayı zorunlu kılar
-            'rel': 0,          // Video bitince sadece kanalın videolarını gösterir
-            'modestbranding': 1,
-            // ORIGIN DEĞİŞİKLİĞİ BURADA:
-            'origin': 'https://rahmetbulutu.onrender.com',
-            'widget_referrer': 'https://rahmetbulutu.onrender.com'
-          },
-          events: {
-            'onStateChange': onPlayerStateChange // Senin ilerleme kaydetme fonksiyonun
-          }
-        });
+  var player;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('youtube-player', {
+      height: '100%',
+      width: '100%',
+      videoId: VIDEO_SETTINGS.videoId,
+      // Chrome Mobil için standart host + origin ikilisi en sağlamıdır
+      host: 'https://www.youtube.com',
+      playerVars: {
+        'start': VIDEO_SETTINGS.startSeconds,
+        'playsinline': 1,
+        'rel': 0,
+        'enablejsapi': 1,
+        'modestbranding': 1,
+        // ORIGIN DEĞİŞİKLİĞİ BURADA:
+        'origin': 'https://rahmetbulutu.onrender.com',
+        'widget_referrer': 'https://rahmetbulutu.onrender.com'
+      },
+      events: {
+        'onStateChange': onPlayerStateChange,
+        'onError': onPlayerError
       }
+    });
+  }
 
-      // İlerleme kaydetme fonksiyonun (Eğer alt kısımda tanımlı değilse hata vermemesi için boş taslak)
-      function onPlayerStateChange(event) {
-        if (typeof checkProgress === "function") {
-          checkProgress(event);
-        }
-      }
-    </script>
+  function onPlayerError(event) {
+    console.error("YouTube Hata Kodu:", event.data);
+  }
+
+  function onPlayerStateChange(event) {
+    if (typeof checkProgress === "function") {
+       checkProgress(event); 
+    }
+  }
+</script>
+
   
 
 
