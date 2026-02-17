@@ -34,13 +34,49 @@
     </div>
 
     <script>
+      // 1. Ayarları Güvenli Hale Getir
       const VIDEO_SETTINGS = {
         videoId: "{{ post.youtube_video_id }}",
-        startSeconds: parseFloat("{{ user_progress.last_position|default:0 }}"),
+        // Sayı formatındaki virgül/nokta hatasını önlemek için:
+        startSeconds: Math.floor(parseFloat("{{ user_progress.last_position|default:0 }}".toString().replace(',', '.')) || 0),
         csrfToken: "{{ csrf_token }}",
         saveUrl: "{% url 'save_video_progress' %}"
       };
+
+      // 2. YouTube IFrame API'sini "No-Cookie" üzerinden yükle
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube-nocookie.com/iframe_api"; // <-- Güncellenen Link
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('youtube-player', {
+          height: '100%',
+          width: '100%',
+          videoId: VIDEO_SETTINGS.videoId,
+          host: 'https://www.youtube-nocookie.com', // <-- API'ye No-Cookie hostunu zorla
+          playerVars: {
+            'start': VIDEO_SETTINGS.startSeconds,
+            'playsinline': 1,  // Mobil tarayıcı içinde oynatmayı zorunlu kılar
+            'rel': 0,          // Video bitince sadece kanalın videolarını gösterir
+            'modestbranding': 1,
+            'origin': window.location.origin // Güvenlik doğrulaması
+          },
+          events: {
+            'onStateChange': onPlayerStateChange // Senin ilerleme kaydetme fonksiyonun
+          }
+        });
+      }
+
+      // İlerleme kaydetme fonksiyonun (Eğer alt kısımda tanımlı değilse hata vermemesi için boş taslak)
+      function onPlayerStateChange(event) {
+        if (typeof checkProgress === "function") {
+          checkProgress(event);
+        }
+      }
     </script>
+  
 
 
     <div class="share-buttons mt-5 p-4 border-top border-bottom bg-light rounded-3">
