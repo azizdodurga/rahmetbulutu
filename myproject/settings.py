@@ -193,14 +193,25 @@ cloudinary.config(
 
 
 
+# settings.py
+
+# 1. Django'nun "bu ayar yok" hatasını susturmak için (Uyumluluk katmanı)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+# 2. Django 4.2+ için yeni standart yapı:
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+
+# 3. Temel statik ayarları
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Eğer projenin ana dizininde kendi yazdığın CSS'lerin olduğu bir 'static' klasörü varsa:
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-
-# WhiteNoise'un dosyaları bulamazsa hata verip siteyi çökertmesini engellemek için:
+# 4. WhiteNoise'un dosya hatalarında siteyi çökertmemesi için
 WHITENOISE_MANIFEST_STRICT = False
 
