@@ -192,7 +192,16 @@ cloudinary.config(
 
 
 
-# settings.py
+# Bu satır MUTLAKA olmalı ve başında/sonunda tırnaklara dikkat edilmeli
+STATIC_URL = 'static/'
+
+# Render için gereken diğer yollar
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Proje içindeki ek statik klasörler
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # 1. Django'nun hata vermemesi için eski değişkeni boş bırakalım veya standart yapalım
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
