@@ -74,8 +74,8 @@ CKEDITOR_CONFIGS = {
 }
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.security.SecurityMiddleware',    
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -193,29 +193,25 @@ cloudinary.config(
 
 
 
- # settings.py
-# settings.py
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# settings.py
+# Kendi oluşturduğun statik klasörün varsa ekle
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
-# 1. Django 4.2+ için en hatasız ve 'sade' yapı:
+# CKEditor hatalarını ve AttributeError'u bitiren ayar:
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # WhiteNoise'un sıkıştırma yapmayan, en temel backend'i:
-        "BACKEND": "whitenoise.storage.StaticFilesStorage", 
+        "BACKEND": "whitenoise.storage.StaticFilesStorage", # Sıkıştırma yapmayan en güvenli mod
     },
 }
-
-# 2. Django'yu kandırmak için (AttributeError almamak adına):
+# STORAGES bloğunun hemen altına ekle:
 STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
-
-# 3. CKEditor hatalarını tamamen susturmak için:
+# Dosya eksik olsa bile sitenin açılmasını sağlar
 WHITENOISE_MANIFEST_STRICT = False
-
-# 3. Temel Statik Yollar
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
