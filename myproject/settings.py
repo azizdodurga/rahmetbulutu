@@ -19,6 +19,7 @@ import os
 # 2. Proxy ayarları (Google Cloud için kritik)
 # Google Cloud isteği bir proxy üzerinden ilettiği için bu ayar şarttır
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 # 3. Debug modunu kapatmayı unutma (Canlı ortamda güvenlik için)
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
