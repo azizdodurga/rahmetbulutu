@@ -53,3 +53,4 @@ setInterval(() => {
     saveProgress(player.getCurrentTime());
   }
 }, 15000);
+

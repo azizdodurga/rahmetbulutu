@@ -53,14 +53,15 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 ALLOWED_HOSTS = [
     'rahmetbulutu.com.tr', 
     'www.rahmetbulutu.com.tr', 
-    'rahmet-bulutu-1016457131278.europe-west1.run.app'
+    'rahmet-bulutu-1016457131278.europe-west1.run.app',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://rahmetbulutu.com.tr',
     'https://www.rahmetbulutu.com.tr'
 ]
-
+if not DEBUG:
+    PREPEND_WWW = True
 # Application definition
 
 INSTALLED_APPS = [
