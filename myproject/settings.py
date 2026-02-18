@@ -14,12 +14,7 @@ from pathlib import Path
 import cloudinary
 
 import os
-# 1. Google Cloud Run URL'sini ve kendi domainini buraya ekle
-CSRF_TRUSTED_ORIGINS = [
-    'https://rahmet-bulutu-*.a.run.app', # Google'ın verdiği geçici URL'ler için
-    'https://rahmetbulutu.com',          # Kendi domainin için
-    'https://www.rahmetbulutu.com'
-]
+
 
 # 2. Proxy ayarları (Google Cloud için kritik)
 # Google Cloud isteği bir proxy üzerinden ilettiği için bu ayar şarttır
@@ -54,9 +49,16 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-ALLOWED_HOSTS = ['*']
-# CSRF hatalarını önlemek için (Google Cloud Run için kritik)
-CSRF_TRUSTED_ORIGINS = ['https://*.a.run.app']
+ALLOWED_HOSTS = [
+    'rahmetbulutu.com.tr', 
+    'www.rahmetbulutu.com.tr', 
+    'rahmet-bulutu-1016457131278.europe-west1.run.app'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://rahmetbulutu.com.tr',
+    'https://www.rahmetbulutu.com.tr'
+]
 
 # Application definition
 
