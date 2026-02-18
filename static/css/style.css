@@ -101,3 +101,25 @@ body {
   overflow: hidden;
   /* Kenarların yuvarlaklığını korumak için */
 }
+
+
+/* Mobilde butonlar birbirine çok yapışmasın ve daha yuvarlak olsun */
+.pagination .page-link {
+  border-radius: 8px;
+  margin: 0 2px;
+  color: #555;
+  border-color: #eee;
+}
+
+/* Aktif/Sayfa sayısı kutusunu özelleştirelim */
+.pagination .page-item.disabled .page-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Hover etkisini yumuşatalım */
+.pagination .page-link:hover {
+  background-color: #f8f9fa;
+  border-color: #ddd;
+  color: #000;
+}
